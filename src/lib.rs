@@ -8,7 +8,7 @@
 //! Basic usage:
 //!
 //! ```
-//! # #[cfg(feature = "image")]
+//! # #[cfg(all(feature = "image", feature = "std"))]
 //! # {
 //! use blockhash::blockhash256_string;
 //!
