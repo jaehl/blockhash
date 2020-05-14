@@ -1,0 +1,26 @@
+[package]
+name = "blockhash"
+version = "0.1.0"
+authors = ["James Mills <james@jaehl.net>"]
+description = "A perceptual hashing algorithm for detecting similar images."
+keywords = ["blockhash", "fingerprint", "hash", "perceptual"]
+categories = ["multimedia::images"]
+license = "MIT"
+readme = "README.md"
+documentation = "https://docs.rs/blockhash"
+homepage = "https://github.com/jaehl/blockhash"
+repository = "https://github.com/jaehl/blockhash"
+edition = "2018"
+
+[dependencies]
+image = { version = "0.23", optional = true }
+
+[dev-dependencies]
+image = "0.23"
+
+[features]
+default = ["std"]
+std = []
+
+[package.metadata.docs.rs]
+all-features = true
