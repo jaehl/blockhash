@@ -319,18 +319,60 @@ blockhash_impl!(impl144, 12);
 blockhash_impl!(impl256, 16);
 
 /// Generates a 16-bit perceptual hash of an image as an array of bytes.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "image")]
+/// # {
+/// use blockhash::blockhash16;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash16(&img);
+///
+/// assert_eq!(&hash[..], &[0x35, 0x6c]);
+/// # }
+/// ```
 #[inline(always)]
 pub fn blockhash16<I: Image>(img: &I) -> [u8; 2] {
     impl16::blockhash(img)
 }
 
 /// Generates a 16-bit perceptual hash of an image as an integer.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "image")]
+/// # {
+/// use blockhash::blockhash16_int;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash16_int(&img);
+///
+/// assert_eq!(hash, 0x356c);
+/// # }
+/// ```
 #[inline(always)]
 pub fn blockhash16_int<I: Image>(img: &I) -> u16 {
     u16::from_be_bytes(blockhash16(img))
 }
 
 /// Generates a 16-bit perceptual hash of an image as a hex string.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(all(feature = "image", feature = "std"))]
+/// # {
+/// use blockhash::blockhash16_string;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash16_string(&img);
+///
+/// assert_eq!(hash, "356c");
+/// # }
+/// ```
 #[cfg(feature = "std")]
 #[inline(always)]
 pub fn blockhash16_string<I: Image>(img: &I) -> String {
@@ -338,18 +380,60 @@ pub fn blockhash16_string<I: Image>(img: &I) -> String {
 }
 
 /// Generates a 64-bit perceptual hash of an image as an array of bytes.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "image")]
+/// # {
+/// use blockhash::blockhash64;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash64(&img);
+///
+/// assert_eq!(&hash[..], &[0xaf, 0x05, 0x75, 0x29, 0x7c, 0x4c, 0x4c, 0xe3]);
+/// # }
+/// ```
 #[inline(always)]
 pub fn blockhash64<I: Image>(img: &I) -> [u8; 8] {
     impl64::blockhash(img)
 }
 
 /// Generates a 64-bit perceptual hash of an image as an integer.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "image")]
+/// # {
+/// use blockhash::blockhash64_int;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash64_int(&img);
+///
+/// assert_eq!(hash, 0xaf05_7529_7c4c_4ce3);
+/// # }
+/// ```
 #[inline(always)]
 pub fn blockhash64_int<I: Image>(img: &I) -> u64 {
     u64::from_be_bytes(blockhash64(img))
 }
 
 /// Generates a 64-bit perceptual hash of an image as a hex string.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(all(feature = "image", feature = "std"))]
+/// # {
+/// use blockhash::blockhash64_string;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash64_string(&img);
+///
+/// assert_eq!(hash, "af0575297c4c4ce3");
+/// # }
+/// ```
 #[cfg(feature = "std")]
 #[inline(always)]
 pub fn blockhash64_string<I: Image>(img: &I) -> String {
@@ -357,12 +441,46 @@ pub fn blockhash64_string<I: Image>(img: &I) -> String {
 }
 
 /// Generates a 144-bit perceptual hash of an image as an array of bytes.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "image")]
+/// # {
+/// use blockhash::blockhash144;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash144(&img);
+///
+/// assert_eq!(
+///     &hash[..],
+///     &[
+///         0x93, 0xfc, 0x0d, 0x91, 0x3b, 0xd3, 0x18, 0x33, 0x2b,
+///         0x37, 0xc3, 0x7d, 0x30, 0x83, 0x28, 0xe2, 0xef, 0x83,
+///     ],
+/// );
+/// # }
+/// ```
 #[inline(always)]
 pub fn blockhash144<I: Image>(img: &I) -> [u8; 18] {
     impl144::blockhash(img)
 }
 
 /// Generates a 144-bit perceptual hash of an image as a hex string.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(all(feature = "image", feature = "std"))]
+/// # {
+/// use blockhash::blockhash144_string;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash144_string(&img);
+///
+/// assert_eq!(hash, "93fc0d913bd318332b37c37d308328e2ef83");
+/// # }
+/// ```
 #[cfg(feature = "std")]
 #[inline(always)]
 pub fn blockhash144_string<I: Image>(img: &I) -> String {
@@ -370,12 +488,51 @@ pub fn blockhash144_string<I: Image>(img: &I) -> String {
 }
 
 /// Generates a 256-bit perceptual hash of an image as an array of bytes.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "image")]
+/// # {
+/// use blockhash::blockhash256;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash256(&img);
+///
+/// assert_eq!(
+///     &hash[..],
+///     &[
+///         0x9c, 0xfd, 0xe0, 0x3d, 0xc4, 0x19, 0x84, 0x67,
+///         0xad, 0x67, 0x1d, 0x17, 0x1c, 0x07, 0x1c, 0x5b,
+///         0x1f, 0xf8, 0x1b, 0xf9, 0x19, 0xd9, 0x18, 0x18,
+///         0x38, 0xf8, 0xf8, 0x90, 0xf8, 0x07, 0xff, 0x01,
+///     ],
+/// );
+/// # }
+/// ```
 #[inline(always)]
 pub fn blockhash256<I: Image>(img: &I) -> [u8; 32] {
     impl256::blockhash(img)
 }
 
 /// Generates a 256-bit perceptual hash of an image as a hex string.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(all(feature = "image", feature = "std"))]
+/// # {
+/// use blockhash::blockhash256_string;
+///
+/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let hash = blockhash256_string(&img);
+///
+/// assert_eq!(
+///     hash,
+///     "9cfde03dc4198467ad671d171c071c5b1ff81bf919d9181838f8f890f807ff01",
+/// );
+/// # }
+/// ```
 #[cfg(feature = "std")]
 #[inline(always)]
 pub fn blockhash256_string<I: Image>(img: &I) -> String {
