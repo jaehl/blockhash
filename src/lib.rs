@@ -31,6 +31,7 @@
 //! [Blockhash]: http://blockhash.io
 
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 /// Provides access to image data.
 pub trait Image {
@@ -374,6 +375,7 @@ pub fn blockhash16_int<I: Image>(img: &I) -> u16 {
 /// # }
 /// ```
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[inline(always)]
 pub fn blockhash16_string<I: Image>(img: &I) -> String {
     impl16::blockhash_string(img)
@@ -435,6 +437,7 @@ pub fn blockhash64_int<I: Image>(img: &I) -> u64 {
 /// # }
 /// ```
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[inline(always)]
 pub fn blockhash64_string<I: Image>(img: &I) -> String {
     impl64::blockhash_string(img)
@@ -482,6 +485,7 @@ pub fn blockhash144<I: Image>(img: &I) -> [u8; 18] {
 /// # }
 /// ```
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[inline(always)]
 pub fn blockhash144_string<I: Image>(img: &I) -> String {
     impl144::blockhash_string(img)
@@ -534,6 +538,7 @@ pub fn blockhash256<I: Image>(img: &I) -> [u8; 32] {
 /// # }
 /// ```
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[inline(always)]
 pub fn blockhash256_string<I: Image>(img: &I) -> String {
     impl256::blockhash_string(img)
