@@ -11,7 +11,7 @@
 //! # #[cfg(all(feature = "image"))] {
 //! use blockhash::blockhash256;
 //!
-//! let img = image::open("tests/images/512x512_rgb.png").unwrap();
+//! let img = image::open("images/512x512_rgb.png").unwrap();
 //! let hash = blockhash256(&img);
 //!
 //! assert_eq!(
@@ -34,6 +34,9 @@
 
 mod impls;
 
+#[cfg(test)]
+mod tests;
+
 use core::fmt::{self, Display, Formatter};
 use core::str::FromStr;
 use impls::*;
@@ -47,7 +50,7 @@ pub trait Image {
     fn get_pixel(&self, x: u32, y: u32) -> [u8; 4];
 }
 
-#[cfg(feature = "image")]
+#[cfg(any(feature = "image", test))]
 impl<T, P> Image for T
 where
     T: image::GenericImageView<Pixel = P>,
@@ -85,7 +88,7 @@ impl std::error::Error for BlockhashParseError {}
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash16, Blockhash16};
 ///
-/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/512x512_rgb.png").unwrap();
 /// let hash = blockhash16(&img);
 ///
 /// assert_eq!(hash, Blockhash16::from([0x35, 0x6c]));
@@ -171,7 +174,7 @@ impl From<Blockhash16> for u16 {
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash64, Blockhash64};
 ///
-/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/512x512_rgb.png").unwrap();
 /// let hash = blockhash64(&img);
 ///
 /// assert_eq!(
@@ -264,7 +267,7 @@ impl From<Blockhash64> for u64 {
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash144, Blockhash144};
 ///
-/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/512x512_rgb.png").unwrap();
 /// let hash = blockhash144(&img);
 ///
 /// assert_eq!(
@@ -348,7 +351,7 @@ impl From<Blockhash144> for [u8; 18] {
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash256, Blockhash256};
 ///
-/// let img = image::open("tests/images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/512x512_rgb.png").unwrap();
 /// let hash = blockhash256(&img);
 ///
 /// assert_eq!(

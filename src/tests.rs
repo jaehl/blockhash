@@ -1,23 +1,8 @@
-use blockhash::*;
-use image::{DynamicImage, GenericImageView, Pixel};
-
-pub struct ImageProxy(pub DynamicImage);
-
-impl Image for ImageProxy {
-    #[inline(always)]
-    fn dimensions(&self) -> (u32, u32) {
-        GenericImageView::dimensions(&self.0)
-    }
-
-    #[inline(always)]
-    fn get_pixel(&self, x: u32, y: u32) -> [u8; 4] {
-        GenericImageView::get_pixel(&self.0, x, y).to_rgba().0
-    }
-}
+use super::*;
 
 #[test]
 fn example_16x16_rgb() {
-    let im = ImageProxy(image::open("tests/images/16x16_rgb.png").unwrap());
+    let im = image::open("images/16x16_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "c9cc".parse().unwrap());
     assert_eq!(blockhash64(&im), "f0f0e7c0d8f0f864".parse().unwrap());
     assert_eq!(
@@ -34,7 +19,7 @@ fn example_16x16_rgb() {
 
 #[test]
 fn example_1x1_rgb() {
-    let im = ImageProxy(image::open("tests/images/1x1_rgb.png").unwrap());
+    let im = image::open("images/1x1_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "ffff".parse().unwrap());
     assert_eq!(blockhash64(&im), "ffffffffffffffff".parse().unwrap());
     assert_eq!(
@@ -51,7 +36,7 @@ fn example_1x1_rgb() {
 
 #[test]
 fn example_241x159_l() {
-    let im = ImageProxy(image::open("tests/images/241x159_l.png").unwrap());
+    let im = image::open("images/241x159_l.png").unwrap();
     assert_eq!(blockhash16(&im), "63a9".parse().unwrap());
     assert_eq!(blockhash64(&im), "3c3c2e4ecf84819f".parse().unwrap());
     assert_eq!(
@@ -68,7 +53,7 @@ fn example_241x159_l() {
 
 #[test]
 fn example_256x256_rgb() {
-    let im = ImageProxy(image::open("tests/images/256x256_rgb.png").unwrap());
+    let im = image::open("images/256x256_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "9399".parse().unwrap());
     assert_eq!(blockhash64(&im), "f30300fff36083f8".parse().unwrap());
     assert_eq!(
@@ -85,7 +70,7 @@ fn example_256x256_rgb() {
 
 #[test]
 fn example_26x17_rgb() {
-    let im = ImageProxy(image::open("tests/images/26x17_rgb.png").unwrap());
+    let im = image::open("images/26x17_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "6666".parse().unwrap());
     assert_eq!(blockhash64(&im), "047f3e1c3c3c7e0c".parse().unwrap());
     assert_eq!(
@@ -102,7 +87,7 @@ fn example_26x17_rgb() {
 
 #[test]
 fn example_35x2_rgb() {
-    let im = ImageProxy(image::open("tests/images/35x2_rgb.png").unwrap());
+    let im = image::open("images/35x2_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "cccc".parse().unwrap());
     assert_eq!(blockhash64(&im), "f0f0f0f0f0f0f0f0".parse().unwrap());
     assert_eq!(
@@ -119,7 +104,7 @@ fn example_35x2_rgb() {
 
 #[test]
 fn example_3x20_rgb() {
-    let im = ImageProxy(image::open("tests/images/3x20_rgb.png").unwrap());
+    let im = image::open("images/3x20_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "3633".parse().unwrap());
     assert_eq!(blockhash64(&im), "1f1c3c1c3f181f07".parse().unwrap());
     assert_eq!(
@@ -136,7 +121,7 @@ fn example_3x20_rgb() {
 
 #[test]
 fn example_450x300_rgb() {
-    let im = ImageProxy(image::open("tests/images/450x300_rgb.png").unwrap());
+    let im = image::open("images/450x300_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "9995".parse().unwrap());
     assert_eq!(blockhash64(&im), "00ff01f702f70377".parse().unwrap());
     assert_eq!(
@@ -153,7 +138,7 @@ fn example_450x300_rgb() {
 
 #[test]
 fn example_4x1_rgb() {
-    let im = ImageProxy(image::open("tests/images/4x1_rgb.png").unwrap());
+    let im = image::open("images/4x1_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "5555".parse().unwrap());
     assert_eq!(blockhash64(&im), "3333333333333333".parse().unwrap());
     assert_eq!(
@@ -170,7 +155,7 @@ fn example_4x1_rgb() {
 
 #[test]
 fn example_4x4_rgb() {
-    let im = ImageProxy(image::open("tests/images/4x4_rgb.png").unwrap());
+    let im = image::open("images/4x4_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "c339".parse().unwrap());
     assert_eq!(blockhash64(&im), "f0f00f0f0f0fc3c3".parse().unwrap());
     assert_eq!(
@@ -187,7 +172,7 @@ fn example_4x4_rgb() {
 
 #[test]
 fn example_512x512_l() {
-    let im = ImageProxy(image::open("tests/images/512x512_l.png").unwrap());
+    let im = image::open("images/512x512_l.png").unwrap();
     assert_eq!(blockhash16(&im), "cccc".parse().unwrap());
     assert_eq!(blockhash64(&im), "39f0f8c8d8f0f0b8".parse().unwrap());
     assert_eq!(
@@ -204,7 +189,7 @@ fn example_512x512_l() {
 
 #[test]
 fn example_512x512_rgb() {
-    let im = ImageProxy(image::open("tests/images/512x512_rgb.png").unwrap());
+    let im = image::open("images/512x512_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "356c".parse().unwrap());
     assert_eq!(blockhash64(&im), "af0575297c4c4ce3".parse().unwrap());
     assert_eq!(
@@ -221,7 +206,7 @@ fn example_512x512_rgb() {
 
 #[test]
 fn example_5x2_rgb() {
-    let im = ImageProxy(image::open("tests/images/5x2_rgb.png").unwrap());
+    let im = image::open("images/5x2_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "33cc".parse().unwrap());
     assert_eq!(blockhash64(&im), "2727272763636363".parse().unwrap());
     assert_eq!(
@@ -238,7 +223,7 @@ fn example_5x2_rgb() {
 
 #[test]
 fn example_5x5_rgb() {
-    let im = ImageProxy(image::open("tests/images/5x5_rgb.png").unwrap());
+    let im = image::open("images/5x5_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "cccc".parse().unwrap());
     assert_eq!(blockhash64(&im), "d8d8c7e0e0f8e0f8".parse().unwrap());
     assert_eq!(

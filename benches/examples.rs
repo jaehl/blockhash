@@ -24,7 +24,7 @@ macro_rules! bench_impl {
     ($name:ident, $func:ident, $path:expr) => {
         #[bench]
         fn $name(bencher: &mut Bencher) {
-            let im = ImageProxy(image::open(concat!("tests/images/", $path)).unwrap());
+            let im = ImageProxy(image::open(concat!("images/", $path)).unwrap());
             bencher.iter(|| $func(&im));
         }
     };
