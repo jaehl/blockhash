@@ -21,7 +21,7 @@ fn parse_char(c: u8) -> Result<u8, BlockhashParseError> {
 
 macro_rules! blockhash_impl {
     ($mod:ident, $bits:expr) => {
-        pub mod $mod {
+        pub(crate) mod $mod {
             use super::*;
             use core::fmt::{self, Formatter};
 
@@ -29,7 +29,7 @@ macro_rules! blockhash_impl {
             const HASH_BYTES: usize = HASH_SIZE / 8;
             const BAND_SIZE: usize = HASH_SIZE / 4;
 
-            pub fn blockhash<I: Image>(img: &I) -> [u8; HASH_BYTES] {
+            pub(crate) fn blockhash<I: Image>(img: &I) -> [u8; HASH_BYTES] {
                 let (width, height) = img.dimensions();
 
                 let values = if width % $bits == 0 && height % $bits == 0 {
@@ -43,7 +43,7 @@ macro_rules! blockhash_impl {
                 convert_to_bits(width, height, values)
             }
 
-            pub fn from_str(s: &str) -> Result<[u8; HASH_BYTES], BlockhashParseError> {
+            pub(crate) fn from_str(s: &str) -> Result<[u8; HASH_BYTES], BlockhashParseError> {
                 let s = s.as_bytes();
 
                 if s.len() != HASH_BYTES * 2 {
@@ -59,14 +59,14 @@ macro_rules! blockhash_impl {
                 Ok(bytes)
             }
 
-            pub fn fmt(f: &mut Formatter, hash: [u8; HASH_BYTES]) -> fmt::Result {
+            pub(crate) fn fmt(f: &mut Formatter, hash: [u8; HASH_BYTES]) -> fmt::Result {
                 for byte in &hash {
                     write!(f, "{:02x}", byte)?;
                 }
                 Ok(())
             }
 
-            pub fn distance(left: &[u8; HASH_BYTES], right: &[u8; HASH_BYTES]) -> u32 {
+            pub(crate) fn distance(left: &[u8; HASH_BYTES], right: &[u8; HASH_BYTES]) -> u32 {
                 let mut dist = 0;
 
                 for i in 0..HASH_BYTES {
