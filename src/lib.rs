@@ -121,6 +121,7 @@ impl Blockhash16 {
     /// assert_eq!(a.distance(&b), 3);
     /// ```
     #[inline(always)]
+    #[allow(clippy::trivially_copy_pass_by_ref)]
     pub fn distance(&self, other: &Self) -> u32 {
         impl16::distance(&self.0, &other.0)
     }
@@ -214,6 +215,7 @@ impl Blockhash64 {
     /// assert_eq!(a.distance(&b), 4);
     /// ```
     #[inline(always)]
+    #[allow(clippy::trivially_copy_pass_by_ref)]
     pub fn distance(&self, other: &Self) -> u32 {
         impl64::distance(&self.0, &other.0)
     }
