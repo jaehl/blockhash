@@ -43,7 +43,50 @@ mod tests;
 
 use core::fmt::{self, Display, Formatter};
 use core::str::FromStr;
-use impls::*;
+use impls::blockhash;
+
+fn distance<const SIZE: usize>(left: &[u8; SIZE], right: &[u8; SIZE]) -> u32 {
+    let mut dist = 0;
+
+    for i in 0..SIZE {
+        dist += (left[i] ^ right[i]).count_ones();
+    }
+
+    dist
+}
+
+fn parse_char(c: u8) -> Result<u8, BlockhashParseError> {
+    let val = match c {
+        b'0'..=b'9' => c - b'0',
+        b'a'..=b'f' => c - (b'a' - 10),
+        b'A'..=b'F' => c - (b'A' - 10),
+        _ => return Err(BlockhashParseError),
+    };
+    Ok(val)
+}
+
+fn parse_hash<const SIZE: usize>(s: &str) -> Result<[u8; SIZE], BlockhashParseError> {
+    let s = s.as_bytes();
+
+    if s.len() != SIZE * 2 {
+        return Err(BlockhashParseError);
+    }
+
+    let mut bytes = [0; SIZE];
+
+    for i in 0..SIZE {
+        bytes[i] = (parse_char(s[2 * i])? << 4) | parse_char(s[2 * i + 1])?;
+    }
+
+    Ok(bytes)
+}
+
+fn fmt_hash<const SIZE: usize>(f: &mut Formatter, hash: [u8; SIZE]) -> fmt::Result {
+    for byte in hash {
+        write!(f, "{:02x}", byte)?;
+    }
+    Ok(())
+}
 
 /// Provides access to image data.
 pub trait Image {
@@ -100,7 +143,7 @@ impl std::error::Error for BlockhashParseError {}
 /// ```
 #[inline(always)]
 pub fn blockhash16<I: Image>(img: &I) -> Blockhash16 {
-    Blockhash16(impl16::blockhash(img))
+    Blockhash16(blockhash::<I, 4, 16, 2>(img))
 }
 
 /// A 16-bit hash digest.
@@ -123,7 +166,7 @@ impl Blockhash16 {
     #[inline(always)]
     #[allow(clippy::trivially_copy_pass_by_ref)]
     pub fn distance(&self, other: &Self) -> u32 {
-        impl16::distance(&self.0, &other.0)
+        distance(&self.0, &other.0)
     }
 }
 
@@ -132,14 +175,14 @@ impl FromStr for Blockhash16 {
 
     #[inline(always)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        impl16::from_str(s).map(Self)
+        parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash16 {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        impl16::fmt(f, self.0)
+        fmt_hash(f, self.0)
     }
 }
 
@@ -190,7 +233,7 @@ impl From<Blockhash16> for u16 {
 /// ```
 #[inline(always)]
 pub fn blockhash64<I: Image>(img: &I) -> Blockhash64 {
-    Blockhash64(impl64::blockhash(img))
+    Blockhash64(blockhash::<I, 8, 64, 8>(img))
 }
 
 /// A 64-bit hash digest.
@@ -217,7 +260,7 @@ impl Blockhash64 {
     #[inline(always)]
     #[allow(clippy::trivially_copy_pass_by_ref)]
     pub fn distance(&self, other: &Self) -> u32 {
-        impl64::distance(&self.0, &other.0)
+        distance(&self.0, &other.0)
     }
 }
 
@@ -226,14 +269,14 @@ impl FromStr for Blockhash64 {
 
     #[inline(always)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        impl64::from_str(s).map(Self)
+        parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash64 {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        impl64::fmt(f, self.0)
+        fmt_hash(f, self.0)
     }
 }
 
@@ -287,7 +330,7 @@ impl From<Blockhash64> for u64 {
 /// ```
 #[inline(always)]
 pub fn blockhash144<I: Image>(img: &I) -> Blockhash144 {
-    Blockhash144(impl144::blockhash(img))
+    Blockhash144(blockhash::<I, 12, 144, 18>(img))
 }
 
 /// A 144-bit hash digest.
@@ -315,7 +358,7 @@ impl Blockhash144 {
     /// ```
     #[inline(always)]
     pub fn distance(&self, other: &Self) -> u32 {
-        impl144::distance(&self.0, &other.0)
+        distance(&self.0, &other.0)
     }
 }
 
@@ -324,14 +367,14 @@ impl FromStr for Blockhash144 {
 
     #[inline(always)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        impl144::from_str(s).map(Self)
+        parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash144 {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        impl144::fmt(f, self.0)
+        fmt_hash(f, self.0)
     }
 }
 
@@ -373,7 +416,7 @@ impl From<Blockhash144> for [u8; 18] {
 /// ```
 #[inline(always)]
 pub fn blockhash256<I: Image>(img: &I) -> Blockhash256 {
-    Blockhash256(impl256::blockhash(img))
+    Blockhash256(blockhash::<I, 16, 256, 32>(img))
 }
 
 /// A 256-bit hash digest.
@@ -405,7 +448,7 @@ impl Blockhash256 {
     /// ```
     #[inline(always)]
     pub fn distance(&self, other: &Self) -> u32 {
-        impl256::distance(&self.0, &other.0)
+        distance(&self.0, &other.0)
     }
 }
 
@@ -414,14 +457,14 @@ impl FromStr for Blockhash256 {
 
     #[inline(always)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        impl256::from_str(s).map(Self)
+        parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash256 {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        impl256::fmt(f, self.0)
+        fmt_hash(f, self.0)
     }
 }
 
