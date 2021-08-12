@@ -36,14 +36,14 @@
 #![warn(unreachable_pub)]
 #![warn(unused_qualifications)]
 
-mod impls;
+mod hash;
 
 #[cfg(test)]
 mod tests;
 
 use core::fmt::{self, Display, Formatter};
 use core::str::FromStr;
-use impls::blockhash;
+use hash::blockhash;
 
 fn distance<const SIZE: usize>(left: &[u8; SIZE], right: &[u8; SIZE]) -> u32 {
     let mut dist = 0;
