@@ -18,7 +18,6 @@ pub(crate) fn blockhash<I: Image, const BITS: u32, const SIZE: usize, const OUTS
     convert_to_bits::<SIZE, OUTSIZE>(width, height, &values)
 }
 
-#[inline(always)]
 #[allow(clippy::many_single_char_names)]
 fn get_value<I: Image>(img: &I, x: u32, y: u32) -> u64 {
     match img.get_pixel(x, y) {

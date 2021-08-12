@@ -103,12 +103,12 @@ where
     T: image::GenericImageView<Pixel = P>,
     P: image::Pixel<Subpixel = u8>,
 {
-    #[inline(always)]
+    #[inline]
     fn dimensions(&self) -> (u32, u32) {
         image::GenericImageView::dimensions(self)
     }
 
-    #[inline(always)]
+    #[inline]
     fn get_pixel(&self, x: u32, y: u32) -> [u8; 4] {
         image::GenericImageView::get_pixel(self, x, y).to_rgba().0
     }
@@ -118,7 +118,7 @@ where
 pub struct BlockhashParseError;
 
 impl Display for BlockhashParseError {
-    #[inline(always)]
+    #[inline]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         f.write_str("invalid hash string")
     }
@@ -141,7 +141,8 @@ impl std::error::Error for BlockhashParseError {}
 /// assert_eq!(hash, Blockhash16::from([0x35, 0x6c]));
 /// # }
 /// ```
-#[inline(always)]
+#[inline]
+#[must_use]
 pub fn blockhash16<I: Image>(img: &I) -> Blockhash16 {
     Blockhash16(blockhash::<I, 4, 16, 2>(img))
 }
@@ -163,7 +164,8 @@ impl Blockhash16 {
     ///
     /// assert_eq!(a.distance(&b), 3);
     /// ```
-    #[inline(always)]
+    #[inline]
+    #[must_use]
     #[allow(clippy::trivially_copy_pass_by_ref)]
     pub fn distance(&self, other: &Self) -> u32 {
         distance(&self.0, &other.0)
@@ -173,42 +175,42 @@ impl Blockhash16 {
 impl FromStr for Blockhash16 {
     type Err = BlockhashParseError;
 
-    #[inline(always)]
+    #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash16 {
-    #[inline(always)]
+    #[inline]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         fmt_hash(f, self.0)
     }
 }
 
 impl From<[u8; 2]> for Blockhash16 {
-    #[inline(always)]
+    #[inline]
     fn from(bytes: [u8; 2]) -> Self {
         Blockhash16(bytes)
     }
 }
 
 impl From<Blockhash16> for [u8; 2] {
-    #[inline(always)]
+    #[inline]
     fn from(hash: Blockhash16) -> Self {
         hash.0
     }
 }
 
 impl From<u16> for Blockhash16 {
-    #[inline(always)]
+    #[inline]
     fn from(int: u16) -> Self {
         Blockhash16(int.to_be_bytes())
     }
 }
 
 impl From<Blockhash16> for u16 {
-    #[inline(always)]
+    #[inline]
     fn from(hash: Blockhash16) -> Self {
         u16::from_be_bytes(hash.0)
     }
@@ -231,7 +233,8 @@ impl From<Blockhash16> for u16 {
 /// );
 /// # }
 /// ```
-#[inline(always)]
+#[inline]
+#[must_use]
 pub fn blockhash64<I: Image>(img: &I) -> Blockhash64 {
     Blockhash64(blockhash::<I, 8, 64, 8>(img))
 }
@@ -257,7 +260,8 @@ impl Blockhash64 {
     ///
     /// assert_eq!(a.distance(&b), 4);
     /// ```
-    #[inline(always)]
+    #[inline]
+    #[must_use]
     #[allow(clippy::trivially_copy_pass_by_ref)]
     pub fn distance(&self, other: &Self) -> u32 {
         distance(&self.0, &other.0)
@@ -267,42 +271,42 @@ impl Blockhash64 {
 impl FromStr for Blockhash64 {
     type Err = BlockhashParseError;
 
-    #[inline(always)]
+    #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash64 {
-    #[inline(always)]
+    #[inline]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         fmt_hash(f, self.0)
     }
 }
 
 impl From<[u8; 8]> for Blockhash64 {
-    #[inline(always)]
+    #[inline]
     fn from(bytes: [u8; 8]) -> Self {
         Blockhash64(bytes)
     }
 }
 
 impl From<Blockhash64> for [u8; 8] {
-    #[inline(always)]
+    #[inline]
     fn from(hash: Blockhash64) -> Self {
         hash.0
     }
 }
 
 impl From<u64> for Blockhash64 {
-    #[inline(always)]
+    #[inline]
     fn from(int: u64) -> Self {
         Blockhash64(int.to_be_bytes())
     }
 }
 
 impl From<Blockhash64> for u64 {
-    #[inline(always)]
+    #[inline]
     fn from(hash: Blockhash64) -> Self {
         u64::from_be_bytes(hash.0)
     }
@@ -328,7 +332,8 @@ impl From<Blockhash64> for u64 {
 /// );
 /// # }
 /// ```
-#[inline(always)]
+#[inline]
+#[must_use]
 pub fn blockhash144<I: Image>(img: &I) -> Blockhash144 {
     Blockhash144(blockhash::<I, 12, 144, 18>(img))
 }
@@ -356,7 +361,8 @@ impl Blockhash144 {
     ///
     /// assert_eq!(a.distance(&b), 6);
     /// ```
-    #[inline(always)]
+    #[inline]
+    #[must_use]
     pub fn distance(&self, other: &Self) -> u32 {
         distance(&self.0, &other.0)
     }
@@ -365,28 +371,28 @@ impl Blockhash144 {
 impl FromStr for Blockhash144 {
     type Err = BlockhashParseError;
 
-    #[inline(always)]
+    #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash144 {
-    #[inline(always)]
+    #[inline]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         fmt_hash(f, self.0)
     }
 }
 
 impl From<[u8; 18]> for Blockhash144 {
-    #[inline(always)]
+    #[inline]
     fn from(bytes: [u8; 18]) -> Self {
         Blockhash144(bytes)
     }
 }
 
 impl From<Blockhash144> for [u8; 18] {
-    #[inline(always)]
+    #[inline]
     fn from(hash: Blockhash144) -> Self {
         hash.0
     }
@@ -414,7 +420,8 @@ impl From<Blockhash144> for [u8; 18] {
 /// );
 /// # }
 /// ```
-#[inline(always)]
+#[inline]
+#[must_use]
 pub fn blockhash256<I: Image>(img: &I) -> Blockhash256 {
     Blockhash256(blockhash::<I, 16, 256, 32>(img))
 }
@@ -446,7 +453,8 @@ impl Blockhash256 {
     ///
     /// assert_eq!(a.distance(&b), 11);
     /// ```
-    #[inline(always)]
+    #[inline]
+    #[must_use]
     pub fn distance(&self, other: &Self) -> u32 {
         distance(&self.0, &other.0)
     }
@@ -455,28 +463,28 @@ impl Blockhash256 {
 impl FromStr for Blockhash256 {
     type Err = BlockhashParseError;
 
-    #[inline(always)]
+    #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         parse_hash(s).map(Self)
     }
 }
 
 impl Display for Blockhash256 {
-    #[inline(always)]
+    #[inline]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         fmt_hash(f, self.0)
     }
 }
 
 impl From<[u8; 32]> for Blockhash256 {
-    #[inline(always)]
+    #[inline]
     fn from(bytes: [u8; 32]) -> Self {
         Blockhash256(bytes)
     }
 }
 
 impl From<Blockhash256> for [u8; 32] {
-    #[inline(always)]
+    #[inline]
     fn from(hash: Blockhash256) -> Self {
         hash.0
     }

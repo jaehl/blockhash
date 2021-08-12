@@ -9,12 +9,12 @@ use test::Bencher;
 pub struct ImageProxy(pub DynamicImage);
 
 impl Image for ImageProxy {
-    #[inline(always)]
+    #[inline]
     fn dimensions(&self) -> (u32, u32) {
         GenericImageView::dimensions(&self.0)
     }
 
-    #[inline(always)]
+    #[inline]
     fn get_pixel(&self, x: u32, y: u32) -> [u8; 4] {
         GenericImageView::get_pixel(&self.0, x, y).to_rgba().0
     }
