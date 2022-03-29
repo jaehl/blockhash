@@ -13,10 +13,10 @@ repository = "https://github.com/jaehl/blockhash"
 edition = "2018"
 
 [dependencies]
-image = { version = "0.23", optional = true }
+image = { version = "0.24", optional = true }
 
 [dev-dependencies]
-image = "0.23"
+image = "0.24"
 
 [features]
 default = ["std"]
