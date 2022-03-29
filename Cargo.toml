@@ -1,6 +1,6 @@
 [package]
 name = "blockhash"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["James Mills <james@jaehl.net>"]
 description = "A perceptual hashing algorithm for detecting similar images."
 keywords = ["blockhash", "fingerprint", "hash", "perceptual"]
