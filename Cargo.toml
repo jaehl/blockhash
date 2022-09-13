@@ -1,6 +1,10 @@
 [package]
 name = "blockhash"
 version = "0.4.0"
+edition = "2018"
+resolver = "2"
+rust-version = "1.56.1"
+
 authors = ["James Mills <james@jaehl.net>"]
 description = "A perceptual hashing algorithm for detecting similar images."
 keywords = ["blockhash", "fingerprint", "hash", "perceptual"]
@@ -10,7 +14,6 @@ readme = "README.md"
 documentation = "https://docs.rs/blockhash"
 homepage = "https://github.com/jaehl/blockhash"
 repository = "https://github.com/jaehl/blockhash"
-edition = "2018"
 
 [dependencies]
 image = { version = "0.24", optional = true }
