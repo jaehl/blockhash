@@ -37,8 +37,8 @@ fn example_1x1_rgb() {
 }
 
 #[test]
-fn example_241x159_l() {
-    let im = image::open("images/241x159_l.png").unwrap();
+fn example_241x159_ya() {
+    let im = image::open("images/241x159_ya.png").unwrap();
     assert_eq!(blockhash16(&im), "63a9".parse().unwrap());
     assert_eq!(blockhash64(&im), "3c3c2e4ecf84819f".parse().unwrap());
     assert_eq!(
@@ -173,8 +173,8 @@ fn example_4x4_rgb() {
 }
 
 #[test]
-fn example_512x512_l() {
-    let im = image::open("images/512x512_l.png").unwrap();
+fn example_512x512_y() {
+    let im = image::open("images/512x512_y.png").unwrap();
     assert_eq!(blockhash16(&im), "cccc".parse().unwrap());
     assert_eq!(blockhash64(&im), "39f0f8c8d8f0f0b8".parse().unwrap());
     assert_eq!(
