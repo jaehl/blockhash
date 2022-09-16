@@ -1,4 +1,4 @@
-use crate::Image;
+use crate::{Image, Pixel};
 
 pub(crate) fn blockhash<I: Image, const BITS: u32, const SIZE: usize, const OUTSIZE: usize>(
     img: &I,
@@ -15,15 +15,7 @@ pub(crate) fn blockhash<I: Image, const BITS: u32, const SIZE: usize, const OUTS
         get_values::<I, BITS, SIZE>(img)
     };
 
-    convert_to_bits::<SIZE, OUTSIZE>(width, height, &values)
-}
-
-#[allow(clippy::many_single_char_names)]
-fn get_value<I: Image>(img: &I, x: u32, y: u32) -> u64 {
-    match img.get_pixel(x, y) {
-        [.., 0] => u64::from(u8::MAX) * 3,
-        [r, g, b, _] => u64::from(r) + u64::from(g) + u64::from(b),
-    }
+    convert_to_bits::<SIZE, OUTSIZE>(width, height, &values, I::Pixel::MAX_BRIGHTNESS)
 }
 
 fn get_values_aligned<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SIZE] {
@@ -45,9 +37,9 @@ fn get_values_aligned<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> 
             let block_x = x / block_width;
             let idx_x = block_x as usize;
 
-            let value = get_value(img, x, y);
+            let brightness = u64::from(img.get_pixel(x, y).brightness());
 
-            values[idx_y + idx_x] += value * SIZE as u64;
+            values[idx_y + idx_x] += brightness * SIZE as u64;
         }
     }
 
@@ -110,12 +102,12 @@ fn get_values_larger<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [
                 0 // to avoid overflows (the weight will be zero)
             };
 
-            let value = get_value(img, x as u32, y as u32);
+            let brightness = u64::from(img.get_pixel(x as u32, y as u32).brightness());
 
-            values[idx_top + idx_left] += value * weight_top * weight_left;
-            values[idx_top + idx_right] += value * weight_top * weight_right;
-            values[idx_bottom + idx_left] += value * weight_bottom * weight_left;
-            values[idx_bottom + idx_right] += value * weight_bottom * weight_right;
+            values[idx_top + idx_left] += brightness * weight_top * weight_left;
+            values[idx_top + idx_right] += brightness * weight_top * weight_right;
+            values[idx_bottom + idx_left] += brightness * weight_bottom * weight_left;
+            values[idx_bottom + idx_right] += brightness * weight_bottom * weight_right;
         }
     }
 
@@ -178,26 +170,26 @@ fn get_values<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SI
                 0 // to avoid overflows (the weight will be zero)
             };
 
-            let value = get_value(img, x as u32, y as u32);
+            let brightness = u64::from(img.get_pixel(x as u32, y as u32).brightness());
 
-            values[idx_top + idx_left] += value * weight_top * weight_left;
-            values[idx_top + idx_right] += value * weight_top * weight_right;
-            values[idx_bottom + idx_left] += value * weight_bottom * weight_left;
-            values[idx_bottom + idx_right] += value * weight_bottom * weight_right;
+            values[idx_top + idx_left] += brightness * weight_top * weight_left;
+            values[idx_top + idx_right] += brightness * weight_top * weight_right;
+            values[idx_bottom + idx_left] += brightness * weight_bottom * weight_left;
+            values[idx_bottom + idx_right] += brightness * weight_bottom * weight_right;
 
             for bx in (block_left + 1)..block_right {
                 let idx_x = bx as usize;
-                values[idx_top + idx_x] += value * weight_top * width;
-                values[idx_bottom + idx_x] += value * weight_bottom * width;
+                values[idx_top + idx_x] += brightness * weight_top * width;
+                values[idx_bottom + idx_x] += brightness * weight_bottom * width;
             }
 
             for by in (block_top + 1)..block_bottom {
                 let idx_y = (by * u64::from(BITS)) as usize;
-                values[idx_y + idx_left] += value * height * weight_left;
-                values[idx_y + idx_right] += value * height * weight_right;
+                values[idx_y + idx_left] += brightness * height * weight_left;
+                values[idx_y + idx_right] += brightness * height * weight_right;
             }
 
-            let full_value = value * width * height;
+            let full_value = brightness * width * height;
             for by in (block_top + 1)..block_bottom {
                 let idx_y = (by * u64::from(BITS)) as usize;
                 for bx in (block_left + 1)..block_right {
@@ -215,13 +207,14 @@ fn convert_to_bits<const SIZE: usize, const OUTSIZE: usize>(
     width: u32,
     height: u32,
     values: &[u64; SIZE],
+    max_value: u32,
 ) -> [u8; OUTSIZE] {
     // These values are related, but need to be passed in separately due to
     // limitations with const generics.
     debug_assert_eq!(SIZE, OUTSIZE * 8);
 
     let band_size: usize = SIZE / 4;
-    let half_value = u64::from(u8::MAX) * 3 * u64::from(width) * u64::from(height) / 2;
+    let half_value = u64::from(max_value) * u64::from(width) * u64::from(height) / 2;
 
     let mut bands = *values;
     let mut bits = [0_u8; SIZE];

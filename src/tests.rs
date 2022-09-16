@@ -71,6 +71,23 @@ fn example_256x256_rgb() {
 }
 
 #[test]
+fn example_256x256_rgb16() {
+    let im = image::open("images/256x256_rgb.png").unwrap().into_rgb16();
+    assert_eq!(blockhash16(&im), "9399".parse().unwrap());
+    assert_eq!(blockhash64(&im), "f30300fff36083f8".parse().unwrap());
+    assert_eq!(
+        blockhash144(&im),
+        "f8f30700f0018f8feffe7703700407e07ff0".parse().unwrap(),
+    );
+    assert_eq!(
+        blockhash256(&im),
+        "ff1ffc0f000f001f000103a0f3bffbdffbeff90f70013804e01f800ffc03bff0"
+            .parse()
+            .unwrap(),
+    );
+}
+
+#[test]
 fn example_26x17_rgb() {
     let im = image::open("images/26x17_rgb.png").unwrap();
     assert_eq!(blockhash16(&im), "6666".parse().unwrap());

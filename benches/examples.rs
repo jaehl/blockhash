@@ -4,6 +4,7 @@
 extern crate test;
 
 use blockhash::*;
+use image::DynamicImage;
 use test::Bencher;
 
 macro_rules! bench_impl {
@@ -11,7 +12,13 @@ macro_rules! bench_impl {
         #[bench]
         fn $name(bencher: &mut Bencher) {
             let im = image::open(concat!("images/", $path, ".png")).unwrap();
-            bencher.iter(|| $func(&im));
+            bencher.iter(|| match &im {
+                DynamicImage::ImageLuma8(im) => $func(im),
+                DynamicImage::ImageLumaA8(im) => $func(im),
+                DynamicImage::ImageRgb8(im) => $func(im),
+                DynamicImage::ImageRgb16(im) => $func(im),
+                _ => unimplemented!(),
+            });
         }
     };
 }

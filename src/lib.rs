@@ -38,7 +38,10 @@
 #![warn(unused_qualifications)]
 
 mod hash;
+mod img;
 mod tests;
+
+pub use img::*;
 
 use core::fmt::{self, Display, Formatter};
 use core::str::FromStr;
@@ -85,38 +88,6 @@ fn fmt_hash<const SIZE: usize>(f: &mut Formatter, hash: [u8; SIZE]) -> fmt::Resu
         write!(f, "{:02x}", byte)?;
     }
     Ok(())
-}
-
-/// Image data.
-///
-/// This trait can be implemented on image types in order to add support for
-/// hashing.
-///
-/// If the `image` feature is enabled (the default), this trait is automatically
-/// implemented for images from the [`image`] crate.
-pub trait Image {
-    /// Returns the dimensions of the image.
-    fn dimensions(&self) -> (u32, u32);
-
-    /// Returns the channel data for a given pixel, in RGBA format.
-    fn get_pixel(&self, x: u32, y: u32) -> [u8; 4];
-}
-
-#[cfg(feature = "image")]
-impl<T, P> Image for T
-where
-    T: image::GenericImageView<Pixel = P>,
-    P: image::Pixel<Subpixel = u8>,
-{
-    #[inline]
-    fn dimensions(&self) -> (u32, u32) {
-        image::GenericImageView::dimensions(self)
-    }
-
-    #[inline]
-    fn get_pixel(&self, x: u32, y: u32) -> [u8; 4] {
-        image::GenericImageView::get_pixel(self, x, y).to_rgba().0
-    }
 }
 
 /// An error that can be returned when parsing a hexadecimal string into a hash
