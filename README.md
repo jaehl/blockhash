@@ -13,4 +13,4 @@ perceptual hashes.
 
 This project is licensed under the [MIT license](LICENSE).
 
-[Blockhash]: http://blockhash.io
+[Blockhash]: https://web.archive.org/web/20210827144701/http://blockhash.io/

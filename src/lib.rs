@@ -8,7 +8,7 @@
 //! Basic usage:
 //!
 //! ```
-//! # #[cfg(all(feature = "image"))] {
+//! # #[cfg(feature = "image")] {
 //! use blockhash::blockhash256;
 //!
 //! let img = image::open("images/512x512_rgb.png").unwrap();
@@ -25,13 +25,14 @@
 //!
 //! * `std`: Enables features that require the Rust Standard Library (enabled by
 //!   default).
-//! * `image`: Enables integration with the `image` crate.
+//! * `image`: Enables integration with the [`image`] crate.
 //!
-//! [Blockhash]: http://blockhash.io
+//! [Blockhash]: https://web.archive.org/web/20210827144701/http://blockhash.io/
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![forbid(unsafe_code)]
+#![warn(missing_docs)]
 #![warn(trivial_numeric_casts)]
 #![warn(unreachable_pub)]
 #![warn(unused_qualifications)]
@@ -88,7 +89,13 @@ fn fmt_hash<const SIZE: usize>(f: &mut Formatter, hash: [u8; SIZE]) -> fmt::Resu
     Ok(())
 }
 
-/// Provides access to image data.
+/// Image data.
+///
+/// This trait can be implemented on image types in order to add support for
+/// hashing.
+///
+/// If the `image` feature is enabled, this trait is automatically implemented
+/// for images from the [`image`] crate.
 pub trait Image {
     /// Returns the dimensions of the image.
     fn dimensions(&self) -> (u32, u32);
@@ -114,6 +121,8 @@ where
     }
 }
 
+/// An error that can be returned when parsing a hexadecimal string into a hash
+/// digest.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct BlockhashParseError;
 
@@ -148,6 +157,8 @@ pub fn blockhash16<I: Image>(img: &I) -> Blockhash16 {
 }
 
 /// A 16-bit hash digest.
+///
+/// See [`blockhash16`].
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Blockhash16([u8; 2]);
 
@@ -240,6 +251,8 @@ pub fn blockhash64<I: Image>(img: &I) -> Blockhash64 {
 }
 
 /// A 64-bit hash digest.
+///
+/// See [`blockhash64`].
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Blockhash64([u8; 8]);
 
@@ -339,6 +352,8 @@ pub fn blockhash144<I: Image>(img: &I) -> Blockhash144 {
 }
 
 /// A 144-bit hash digest.
+///
+/// See [`blockhash144`].
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Blockhash144([u8; 18]);
 
@@ -427,6 +442,8 @@ pub fn blockhash256<I: Image>(img: &I) -> Blockhash256 {
 }
 
 /// A 256-bit hash digest.
+///
+/// See [`blockhash256`].
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Blockhash256([u8; 32]);
 
