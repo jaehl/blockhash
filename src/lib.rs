@@ -38,8 +38,6 @@
 #![warn(unused_qualifications)]
 
 mod hash;
-
-#[cfg(test)]
 mod tests;
 
 use core::fmt::{self, Display, Formatter};
@@ -104,7 +102,7 @@ pub trait Image {
     fn get_pixel(&self, x: u32, y: u32) -> [u8; 4];
 }
 
-#[cfg(any(feature = "image", test))]
+#[cfg(feature = "image")]
 impl<T, P> Image for T
 where
     T: image::GenericImageView<Pixel = P>,

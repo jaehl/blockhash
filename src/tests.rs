@@ -1,3 +1,5 @@
+#![cfg(all(test, feature = "image"))]
+
 use super::*;
 
 #[test]
