@@ -1,30 +1,16 @@
 #![feature(test)]
+#![cfg(feature = "image")]
 
 extern crate test;
 
 use blockhash::*;
-use image::{DynamicImage, GenericImageView, Pixel};
 use test::Bencher;
-
-pub struct ImageProxy(pub DynamicImage);
-
-impl Image for ImageProxy {
-    #[inline]
-    fn dimensions(&self) -> (u32, u32) {
-        GenericImageView::dimensions(&self.0)
-    }
-
-    #[inline]
-    fn get_pixel(&self, x: u32, y: u32) -> [u8; 4] {
-        GenericImageView::get_pixel(&self.0, x, y).to_rgba().0
-    }
-}
 
 macro_rules! bench_impl {
     ($name:ident, $func:ident, $path:expr) => {
         #[bench]
         fn $name(bencher: &mut Bencher) {
-            let im = ImageProxy(image::open(concat!("images/", $path)).unwrap());
+            let im = image::open(concat!("images/", $path)).unwrap();
             bencher.iter(|| $func(&im));
         }
     };

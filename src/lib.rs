@@ -25,7 +25,7 @@
 //!
 //! * `std`: Enables features that require the Rust Standard Library (enabled by
 //!   default).
-//! * `image`: Enables integration with the [`image`] crate.
+//! * `image`: Enables integration with the [`image`] crate (enabled by default).
 //!
 //! [Blockhash]: https://web.archive.org/web/20210827144701/http://blockhash.io/
 
@@ -94,8 +94,8 @@ fn fmt_hash<const SIZE: usize>(f: &mut Formatter, hash: [u8; SIZE]) -> fmt::Resu
 /// This trait can be implemented on image types in order to add support for
 /// hashing.
 ///
-/// If the `image` feature is enabled, this trait is automatically implemented
-/// for images from the [`image`] crate.
+/// If the `image` feature is enabled (the default), this trait is automatically
+/// implemented for images from the [`image`] crate.
 pub trait Image {
     /// Returns the dimensions of the image.
     fn dimensions(&self) -> (u32, u32);

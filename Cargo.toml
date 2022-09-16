@@ -19,7 +19,7 @@ image = { version = "0.24", optional = true }
 image = "0.24"
 
 [features]
-default = ["std"]
+default = ["std", "image"]
 std = []
 
 [package.metadata.docs.rs]
