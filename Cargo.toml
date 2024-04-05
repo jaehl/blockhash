@@ -16,7 +16,7 @@ homepage = "https://github.com/jaehl/blockhash"
 repository = "https://github.com/jaehl/blockhash"
 
 [dependencies]
-image = { version = "0.24", optional = true }
+image = { version = "0.25", optional = true }
 
 [features]
 default = ["std", "image"]
