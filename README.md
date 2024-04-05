@@ -1,6 +1,7 @@
 # blockhash
 
 [![Crates.io](https://img.shields.io/crates/v/blockhash.svg)](https://crates.io/crates/blockhash)
+[![CI status](https://img.shields.io/github/actions/workflow/status/jaehl/blockhash/main.yml)](https://github.com/jaehl/blockhash/actions/workflows/main.yml?query=branch%3Amaster)
 [![MIT License](https://img.shields.io/github/license/jaehl/blockhash)](https://github.com/jaehl/blockhash/blob/master/LICENSE)
 
 This is an implementation of the [Blockhash] algorithm for detecting similar images, and can produce 16-, 64-, 144-, and 256-bit
