@@ -1,37 +1,45 @@
 use crate::{Image, Pixel};
 
-pub(crate) fn blockhash<I: Image, const BITS: u32, const SIZE: usize, const OUTSIZE: usize>(
+pub(crate) fn blockhash<
+    I: Image,
+    const BITS: u32,
+    const NUM_BLOCKS: usize,
+    const DIGEST_SIZE: usize,
+>(
     img: &I,
-) -> [u8; OUTSIZE] {
+) -> [u8; DIGEST_SIZE] {
     debug_assert_eq!(BITS % 4, 0);
+    debug_assert_ne!(BITS, 0);
 
     let (width, height) = img.dimensions();
 
     let values = if width % BITS == 0 && height % BITS == 0 {
-        get_values_aligned::<I, BITS, SIZE>(img)
+        get_values_aligned::<I, BITS, NUM_BLOCKS>(img)
     } else if width >= BITS && height >= BITS {
-        get_values_larger::<I, BITS, SIZE>(img)
+        get_values_larger::<I, BITS, NUM_BLOCKS>(img)
     } else {
-        get_values::<I, BITS, SIZE>(img)
+        get_values_generic::<I, BITS, NUM_BLOCKS>(img)
     };
 
-    convert_to_bits::<SIZE, OUTSIZE>(width, height, &values, I::Pixel::MAX_BRIGHTNESS)
+    convert_to_bits(width, height, &values, I::Pixel::MAX_BRIGHTNESS)
 }
 
-fn get_values_aligned<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SIZE] {
+fn get_values_aligned<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
+    img: &I,
+) -> [u64; NUM_BLOCKS] {
     // These values are related, but need to be passed in separately due to
     // limitations with const generics.
-    debug_assert_eq!(SIZE, (BITS * BITS) as usize);
+    debug_assert_eq!(NUM_BLOCKS, (BITS * BITS) as usize);
 
     let (width, height) = img.dimensions();
     let block_width = width / BITS;
     let block_height = height / BITS;
 
-    let mut values = [0_u64; SIZE];
+    let mut values = [0_u64; NUM_BLOCKS];
 
     for y in 0..height {
         let block_y = y / block_height;
-        let idx_y = (block_y * BITS) as usize;
+        let idx_row = (block_y * BITS) as usize;
 
         for x in 0..width {
             let block_x = x / block_width;
@@ -39,22 +47,24 @@ fn get_values_aligned<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> 
 
             let brightness = u64::from(img.get_pixel(x, y).brightness());
 
-            values[idx_y + idx_x] += brightness * SIZE as u64;
+            values[idx_row + idx_x] += brightness * NUM_BLOCKS as u64;
         }
     }
 
     values
 }
 
-fn get_values_larger<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SIZE] {
+fn get_values_larger<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
+    img: &I,
+) -> [u64; NUM_BLOCKS] {
     // These values are related, but need to be passed in separately due to
     // limitations with const generics.
-    debug_assert_eq!(SIZE, (BITS * BITS) as usize);
+    debug_assert_eq!(NUM_BLOCKS, (BITS * BITS) as usize);
 
     let (width, height) = img.dimensions();
     let (width, height) = (u64::from(width), u64::from(height));
 
-    let mut values = [0_u64; SIZE];
+    let mut values = [0_u64; NUM_BLOCKS];
 
     let mut block_top;
     let mut block_bottom = 0;
@@ -76,7 +86,7 @@ fn get_values_larger<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [
         let idx_bottom = if block_bottom < BITS {
             (block_bottom * BITS) as usize
         } else {
-            0 // to avoid overflows (the weight will be zero)
+            0 // to avoid out-of-bounds access (the weight will be zero)
         };
 
         let mut block_left;
@@ -99,7 +109,7 @@ fn get_values_larger<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [
             let idx_right = if block_right < BITS {
                 block_right as usize
             } else {
-                0 // to avoid overflows (the weight will be zero)
+                0 // to avoid out-of-bounds access (the weight will be zero)
             };
 
             let brightness = u64::from(img.get_pixel(x as u32, y as u32).brightness());
@@ -114,15 +124,17 @@ fn get_values_larger<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [
     values
 }
 
-fn get_values<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SIZE] {
+fn get_values_generic<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
+    img: &I,
+) -> [u64; NUM_BLOCKS] {
     // These values are related, but need to be passed in separately due to
     // limitations with const generics.
-    debug_assert_eq!(SIZE, (BITS * BITS) as usize);
+    debug_assert_eq!(NUM_BLOCKS, (BITS * BITS) as usize);
 
     let (width, height) = img.dimensions();
     let (width, height) = (u64::from(width), u64::from(height));
 
-    let mut values = [0_u64; SIZE];
+    let mut values = [0_u64; NUM_BLOCKS];
 
     let mut block_top;
     let mut block_bottom = 0;
@@ -144,7 +156,7 @@ fn get_values<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SI
         let idx_bottom = if block_bottom < u64::from(BITS) {
             (block_bottom * u64::from(BITS)) as usize
         } else {
-            0 // to avoid overflows (the weight will be zero)
+            0 // to avoid out-of-bounds access (the weight will be zero)
         };
 
         let mut block_left;
@@ -167,7 +179,7 @@ fn get_values<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SI
             let idx_right = if block_right < u64::from(BITS) {
                 block_right as usize
             } else {
-                0 // to avoid overflows (the weight will be zero)
+                0 // to avoid out-of-bounds access (the weight will be zero)
             };
 
             let brightness = u64::from(img.get_pixel(x as u32, y as u32).brightness());
@@ -203,21 +215,21 @@ fn get_values<I: Image, const BITS: u32, const SIZE: usize>(img: &I) -> [u64; SI
     values
 }
 
-fn convert_to_bits<const SIZE: usize, const OUTSIZE: usize>(
+fn convert_to_bits<const NUM_BLOCKS: usize, const DIGEST_SIZE: usize>(
     width: u32,
     height: u32,
-    values: &[u64; SIZE],
+    values: &[u64; NUM_BLOCKS],
     max_value: u32,
-) -> [u8; OUTSIZE] {
+) -> [u8; DIGEST_SIZE] {
     // These values are related, but need to be passed in separately due to
     // limitations with const generics.
-    debug_assert_eq!(SIZE, OUTSIZE * 8);
+    debug_assert_eq!(NUM_BLOCKS, DIGEST_SIZE * 8);
 
-    let band_size: usize = SIZE / 4;
+    let band_size: usize = NUM_BLOCKS / 4;
     let half_value = u64::from(max_value) * u64::from(width) * u64::from(height) / 2;
 
     let mut bands = *values;
-    let mut bits = [0_u8; SIZE];
+    let mut bits = [0_u8; NUM_BLOCKS];
 
     for i in 0..4 {
         let offset = i * band_size;
@@ -236,7 +248,7 @@ fn convert_to_bits<const SIZE: usize, const OUTSIZE: usize>(
         }
     }
 
-    let mut res = [0_u8; OUTSIZE];
+    let mut res = [0_u8; DIGEST_SIZE];
 
     for (i, octet) in bits.chunks(8).enumerate() {
         for &bit in octet {
