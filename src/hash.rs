@@ -1,4 +1,4 @@
-use crate::{Image, Pixel};
+use crate::Image;
 
 pub(crate) fn blockhash<
     I: Image,
@@ -21,7 +21,7 @@ pub(crate) fn blockhash<
         get_values_generic::<I, BITS, NUM_BLOCKS>(img)
     };
 
-    convert_to_bits(width, height, &values, I::Pixel::MAX_BRIGHTNESS)
+    convert_to_bits(width, height, &values, I::MAX_BRIGHTNESS)
 }
 
 fn get_values_aligned<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
@@ -45,7 +45,7 @@ fn get_values_aligned<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
             let block_x = x / block_width;
             let idx_x = block_x as usize;
 
-            let brightness = u64::from(img.get_pixel(x, y).brightness());
+            let brightness = u64::from(img.brightness(x, y));
 
             values[idx_row + idx_x] += brightness * NUM_BLOCKS as u64;
         }
@@ -112,7 +112,7 @@ fn get_values_larger<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
                 0 // to avoid out-of-bounds access (the weight will be zero)
             };
 
-            let brightness = u64::from(img.get_pixel(x as u32, y as u32).brightness());
+            let brightness = u64::from(img.brightness(x as u32, y as u32));
 
             values[idx_top + idx_left] += brightness * weight_top * weight_left;
             values[idx_top + idx_right] += brightness * weight_top * weight_right;
@@ -182,7 +182,7 @@ fn get_values_generic<I: Image, const BITS: u32, const NUM_BLOCKS: usize>(
                 0 // to avoid out-of-bounds access (the weight will be zero)
             };
 
-            let brightness = u64::from(img.get_pixel(x as u32, y as u32).brightness());
+            let brightness = u64::from(img.brightness(x as u32, y as u32));
 
             values[idx_top + idx_left] += brightness * weight_top * weight_left;
             values[idx_top + idx_right] += brightness * weight_top * weight_right;

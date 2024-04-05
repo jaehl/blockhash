@@ -35,10 +35,10 @@
 #![warn(unused_qualifications)]
 
 mod hash;
-mod img;
 mod tests;
 
-pub use img::*;
+#[cfg(feature = "image")]
+mod img;
 
 use core::fmt::{self, Display, Formatter};
 use core::str::FromStr;
@@ -457,4 +457,23 @@ impl From<Blockhash256> for [u8; 32] {
     fn from(hash: Blockhash256) -> Self {
         hash.0
     }
+}
+
+/// Image data.
+///
+/// This trait can be implemented on image types in order to add support for
+/// hashing.
+///
+/// If the `image` feature is enabled (the default), this trait is automatically
+/// implemented for images from the [`image`] crate.
+pub trait Image {
+    /// The maximum possible brightness for a pixel.
+    const MAX_BRIGHTNESS: u32;
+
+    /// Returns the dimensions of the image.
+    fn dimensions(&self) -> (u32, u32);
+
+    /// Returns the brightness of the pixel at the given position in the image, in
+    /// the range `0..=MAX_BRIGHTNESS`.
+    fn brightness(&self, x: u32, y: u32) -> u32;
 }
