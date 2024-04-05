@@ -9,15 +9,12 @@
 //!
 //! ```
 //! # #[cfg(feature = "image")] {
-//! use blockhash::blockhash256;
+//! use blockhash::blockhash64;
 //!
-//! let img = image::open("images/512x512_rgb.png").unwrap();
-//! let hash = blockhash256(&img);
+//! let img = image::open("images/example.png").unwrap();
+//! let hash = blockhash64(&img);
 //!
-//! assert_eq!(
-//!     hash.to_string(),
-//!     "9cfde03dc4198467ad671d171c071c5b1ff81bf919d9181838f8f890f807ff01",
-//! );
+//! assert_eq!(hash.to_string(), "c7c48f8989c77e0c");
 //! # }
 //! ```
 //!
@@ -113,10 +110,10 @@ impl std::error::Error for BlockhashParseError {}
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash16, Blockhash16};
 ///
-/// let img = image::open("images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/example.png").unwrap();
 /// let hash = blockhash16(&img);
 ///
-/// assert_eq!(hash, Blockhash16::from([0x35, 0x6c]));
+/// assert_eq!(hash.to_string(), "a396");
 /// # }
 /// ```
 #[inline]
@@ -204,13 +201,10 @@ impl From<Blockhash16> for u16 {
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash64, Blockhash64};
 ///
-/// let img = image::open("images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/example.png").unwrap();
 /// let hash = blockhash64(&img);
 ///
-/// assert_eq!(
-///     hash,
-///     Blockhash64::from([0xaf, 0x05, 0x75, 0x29, 0x7c, 0x4c, 0x4c, 0xe3]),
-/// );
+/// assert_eq!(hash.to_string(), "c7c48f8989c77e0c");
 /// # }
 /// ```
 #[inline]
@@ -302,16 +296,10 @@ impl From<Blockhash64> for u64 {
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash144, Blockhash144};
 ///
-/// let img = image::open("images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/example.png").unwrap();
 /// let hash = blockhash144(&img);
 ///
-/// assert_eq!(
-///     hash,
-///     Blockhash144::from([
-///         0x93, 0xfc, 0x0d, 0x91, 0x3b, 0xd3, 0x18, 0x33, 0x2b,
-///         0x37, 0xc3, 0x7d, 0x30, 0x83, 0x28, 0xe2, 0xef, 0x83,
-///     ]),
-/// );
+/// assert_eq!(hash.to_string(), "d1ee1ec18c3fc3f801c11c15f1f7dc7fc010");
 /// # }
 /// ```
 #[inline]
@@ -390,17 +378,12 @@ impl From<Blockhash144> for [u8; 18] {
 /// # #[cfg(feature = "image")] {
 /// use blockhash::{blockhash256, Blockhash256};
 ///
-/// let img = image::open("images/512x512_rgb.png").unwrap();
+/// let img = image::open("images/example.png").unwrap();
 /// let hash = blockhash256(&img);
 ///
 /// assert_eq!(
-///     hash,
-///     Blockhash256::from([
-///         0x9c, 0xfd, 0xe0, 0x3d, 0xc4, 0x19, 0x84, 0x67,
-///         0xad, 0x67, 0x1d, 0x17, 0x1c, 0x07, 0x1c, 0x5b,
-///         0x1f, 0xf8, 0x1b, 0xf9, 0x19, 0xd9, 0x18, 0x18,
-///         0x38, 0xf8, 0xf8, 0x90, 0xf8, 0x07, 0xff, 0x01,
-///     ]),
+///     hash.to_string(),
+///     "e07ef07ef078e090e0ffc0ffc066c043c043c065f03dfc3f7c7e7fdc2eb20080",
 /// );
 /// # }
 /// ```
