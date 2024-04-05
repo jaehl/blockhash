@@ -3,7 +3,7 @@ name = "blockhash"
 version = "0.5.0"
 edition = "2018"
 resolver = "2"
-rust-version = "1.56.1"
+rust-version = "1.70.0"
 
 authors = ["James Mills <james@jaehl.net>"]
 description = "A perceptual hashing algorithm for detecting similar images."
